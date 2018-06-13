@@ -489,3 +489,12 @@ class UnityEnvironment(object):
             self._loaded = False
         else:
             raise UnityEnvironmentException("No Unity environment is loaded.")
+
+    def record(self):
+        """
+        Sends a shutdown signal to the unity environment, and closes the socket connection.
+        """
+        if self._loaded:
+            self._conn.send(b"RECORD")
+        else:
+            raise UnityEnvironmentException("No Unity environment is loaded.")
