@@ -225,6 +225,8 @@ class TrainerController(object):
                 saver.restore(sess, ckpt.model_checkpoint_path)
             else:
                 sess.run(init)
+
+
             global_step = 0  # This is only for saving the model
             self.env.curriculum.increment_lesson(self._get_progress())
             curr_info = self.env.reset(train_mode=self.fast_simulation)
@@ -232,8 +234,9 @@ class TrainerController(object):
                 for brain_name, trainer in self.trainers.items():
                     trainer.write_tensorboard_text('Hyperparameters', trainer.parameters)
 
-            self.env.record()
-
+            print("begin record")
+            #self.env.record()
+            print("end record op")
 
             try:
                 while any([t.get_step <= t.get_max_steps for k, t in self.trainers.items()]) or not self.train_model:
@@ -242,6 +245,9 @@ class TrainerController(object):
                         curr_info = self.env.reset(train_mode=self.fast_simulation)
                         for brain_name, trainer in self.trainers.items():
                             trainer.end_episode()
+
+
+
                     # Decide and take an action
                     take_action_vector, take_action_memories, take_action_text, take_action_outputs = {}, {}, {}, {}
                     for brain_name, trainer in self.trainers.items():
@@ -249,8 +255,11 @@ class TrainerController(object):
                          take_action_memories[brain_name],
                          take_action_text[brain_name],
                          take_action_outputs[brain_name]) = trainer.take_action(curr_info)
+
                     new_info = self.env.step(vector_action=take_action_vector, memory=take_action_memories,
                                              text_action=take_action_text)
+
+
 
                     for brain_name, trainer in self.trainers.items():
                         trainer.add_experiences(curr_info, new_info, take_action_outputs[brain_name])
@@ -270,6 +279,8 @@ class TrainerController(object):
                     if global_step % self.save_freq == 0 and global_step != 0 and self.train_model:
                         # Save Tensorflow model
                         self._save_model(sess, steps=global_step, saver=saver)
+
+
 
                 # Final save Tensorflow model
                 if global_step != 0 and self.train_model:

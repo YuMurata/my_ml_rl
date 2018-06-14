@@ -496,5 +496,6 @@ class UnityEnvironment(object):
         """
         if self._loaded:
             self._conn.send(b"RECORD")
+            return self._get_state()
         else:
             raise UnityEnvironmentException("No Unity environment is loaded.")
