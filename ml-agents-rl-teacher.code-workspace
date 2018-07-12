@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "python"
+		}
+	],
+	"files.exclude":{
+		"python/models":true,
+		"python/env":true,
+		"python/summaries":true,
+	},
+	"settings": {},
+}

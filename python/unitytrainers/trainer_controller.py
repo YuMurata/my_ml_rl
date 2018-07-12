@@ -290,6 +290,7 @@ class TrainerController(object):
                     self.logger.info("Learning was interrupted. Please wait while the graph is generated.")
                     self._save_model(sess, steps=global_step, saver=saver)
                 pass
+        print("env close")
         self.env.close()
         if self.train_model:
             self._export_graph()
