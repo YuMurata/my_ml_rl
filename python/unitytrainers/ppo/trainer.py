@@ -13,6 +13,8 @@ from unitytrainers.buffer import Buffer
 from unitytrainers.ppo.models import PPOModel
 from unitytrainers.trainer import UnityTrainerException, Trainer
 
+from rl_teacher.comparison_collectors import HumanComparisonCollector
+
 logger = logging.getLogger("unityagents")
 
 
@@ -84,8 +86,8 @@ class PPOTrainer(Trainer):
 
         self.summary_writer = tf.summary.FileWriter(self.summary_path)
 
-        from comparison_collectors import HumanComparisonCollector
-        self.comparison_collector = HumanComparisonCollector(env_id, experiment_name=experiment_name)
+        self.comparison_collector = HumanComparisonCollector(experiment_name=brain_name)
+
     def __str__(self):
         return '''Hypermarameters for the PPO Trainer of brain {0}: \n{1}'''.format(
             self.brain_name, '\n'.join(['\t{0}:\t{1}'.format(x, self.trainer_parameters[x]) for x in self.param_keys]))
