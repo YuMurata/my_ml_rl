@@ -466,7 +466,7 @@ class PPOTrainer(Trainer):
         segments = []
         segment_length = int(clip_length_in_seconds * env.fps)
         while len(segments) < n_desired_segments:
-        path = do_rollout(env, random_action)
+            path = do_rollout(env)
         # Calculate the number of segments to sample from the path
         # Such that the probability of sampling the same part twice is fairly low.
         segments_for_this_path = max(1, int(0.25 * len(path["obs"]) / segment_length))
