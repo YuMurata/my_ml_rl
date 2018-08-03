@@ -1,6 +1,10 @@
 # Using TensorFlowSharp in Unity (Experimental)
 
+<<<<<<< HEAD
 ML-Agents allows you to use pre-trained [TensorFlow graphs](https://www.tensorflow.org/programmers_guide/graphs) inside your Unity games. This support is possible thanks to [the TensorFlowSharp project](https://github.com/migueldeicaza/TensorFlowSharp). The primary purpose for this support is to use the TensorFlow models produced by the ML-Agents own training programs, but a side benefit is that you can use any TensorFlow model.
+=======
+The ML-Agents toolkit allows you to use pre-trained [TensorFlow graphs](https://www.tensorflow.org/programmers_guide/graphs) inside your Unity games. This support is possible thanks to [the TensorFlowSharp project](https://github.com/migueldeicaza/TensorFlowSharp). The primary purpose for this support is to use the TensorFlow models produced by the ML-Agents toolkit's own training programs, but a side benefit is that you can use any TensorFlow model.
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 _Notice: This feature is still experimental. While it is possible to embed trained models into Unity games, Unity Technologies does not officially support this use-case for production games at this time. As such, no guarantees are provided regarding the quality of experience. If you encounter issues regarding battery life, or general performance (especially on mobile), please let us know._
 
@@ -15,7 +19,11 @@ _Notice: This feature is still experimental. While it is possible to embed train
 ## Requirements
 
 * Unity 2017.1 or above
+<<<<<<< HEAD
 * Unity TensorFlow Plugin ([Download here](https://s3.amazonaws.com/unity-ml-agents/0.3/TFSharpPlugin.unitypackage))
+=======
+* Unity TensorFlow Plugin ([Download here](https://s3.amazonaws.com/unity-ml-agents/0.4/TFSharpPlugin.unitypackage))
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 # Using TensorFlowSharp with ML-Agents
 
@@ -72,6 +80,7 @@ If you followed these instructions well, the agents in your environment that use
 
 # iOS additional instructions for building
 
+<<<<<<< HEAD
 * Once you build for iOS in the editor, Xcode will launch.
 * In `General` -> `Linked Frameworks and Libraries`:
   * Add a framework called `Accelerate.framework`
@@ -80,6 +89,14 @@ If you followed these instructions well, the agents in your environment that use
   * Double click on the flag list to expand the list
   * Add `-force_load`
   * Drag the library `libtensorflow-core.a` from the `Project Navigator` on the left under `Libraries/ML-Agents/Plugins/iOS` into the flag list, after `-force_load`.
+=======
+* Once you build the project for iOS in the editor, open the .xcodeproj file within the project folder using Xcode.
+* Set up your ios account following the [iOS Account setup page](https://docs.unity3d.com/Manual/iphone-accountsetup.html). 
+* In **Build Settings** > **Linking** > **Other Linker Flags**:
+  * Double click on the flag list to expand the list
+  * Add `-force_load`
+  * Drag the library `libtensorflow-core.a` from the **Project Navigator** on the left under `Libraries/ML-Agents/Plugins/iOS` into the flag list, after `-force_load`.
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 # Using TensorFlowSharp without ML-Agents
 

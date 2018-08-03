@@ -2,3 +2,9 @@
 *.unity binary
 *.prefab binary
 *.meta binary
+<<<<<<< HEAD
+=======
+*/CommunicatorObjects/* binary
+*/communicator_objects/* binary
+*.md text
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712

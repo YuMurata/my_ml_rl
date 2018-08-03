@@ -6,6 +6,11 @@
 /unity-environment/[Pp]ackages/
 /unity-environment/[Uu]nity[Pp]ackage[Mm]anager/
 /unity-environment/Assets/AssetStoreTools*
+<<<<<<< HEAD
+=======
+/unity-environment/Assets/Plugins*
+/unity-environment/Assets/Gizmos*
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 # Tensorflow Model Info
 /models
@@ -75,4 +80,7 @@ python/summaries
 
 
 .DS_Store
+<<<<<<< HEAD
 /python/env
+=======
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712

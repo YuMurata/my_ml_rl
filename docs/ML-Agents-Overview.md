@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # ML-Agents Overview
 
 **Unity Machine Learning Agents** (ML-Agents) is an open-source Unity plugin 
+=======
+# ML-Agents Toolkit Overview
+
+**The Unity Machine Learning Agents Toolkit** (ML-Agents Toolkit) is an open-source Unity plugin 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 that enables games and simulations to serve as environments for training
 intelligent agents. Agents can be trained using reinforcement learning,
 imitation learning, neuroevolution, or other machine learning methods through
@@ -10,14 +16,22 @@ and hobbyists to easily train intelligent agents for 2D, 3D and VR/AR games.
 These trained agents can be used for multiple purposes, including
 controlling NPC behavior (in a variety of settings such as multi-agent and
 adversarial), automated testing of game builds and evaluating different game
+<<<<<<< HEAD
 design decisions pre-release. ML-Agents is mutually beneficial for both game
+=======
+design decisions pre-release. The ML-Agents toolkit is mutually beneficial for both game
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 developers and AI researchers as it provides a central platform where advances
 in AI can be evaluated on Unity’s rich environments and then made accessible
 to the wider research and game developer communities. 
 
 Depending on your background (i.e. researcher, game developer, hobbyist),
 you may have very different questions on your mind at the moment.
+<<<<<<< HEAD
 To make your transition to ML-Agents easier, we provide several background
+=======
+To make your transition to the ML-Agents toolkit easier, we provide several background
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 pages that include overviews and helpful resources on the 
 [Unity Engine](Background-Unity.md), 
 [machine learning](Background-Machine-Learning.md) and 
@@ -27,7 +41,11 @@ basic machine learning concepts or have not previously heard of TensorFlow.
 
 The remainder of this page contains a deep dive into ML-Agents, its key
 components, different training modes and scenarios. By the end of it, you
+<<<<<<< HEAD
 should have a good sense of _what_ ML-Agents allows you to do. The subsequent
+=======
+should have a good sense of _what_ the ML-Agents toolkit allows you to do. The subsequent
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 documentation pages provide examples of _how_ to use ML-Agents.
 
 ## Running Example: Training NPC Behaviors
@@ -109,14 +127,24 @@ the process of learning a policy through running simulations is called the
 **training phase**, while playing the game with an NPC that is using its 
 learned policy is called the **inference phase**.
 
+<<<<<<< HEAD
 ML-Agents provides all the necessary tools for using Unity as the simulation 
 engine for learning the policies of different objects in a Unity environment.
 In the next few sections, we discuss how ML-Agents achieves this and what
+=======
+The ML-Agents toolkit provides all the necessary tools for using Unity as the simulation 
+engine for learning the policies of different objects in a Unity environment.
+In the next few sections, we discuss how the ML-Agents toolkit achieves this and what
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 features it provides.
 
 ## Key Components
 
+<<<<<<< HEAD
 ML-Agents is a Unity plugin that contains three high-level components: 
+=======
+The ML-Agents toolkit is a Unity plugin that contains three high-level components: 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 * **Learning Environment** - which contains the Unity scene and all the game
 characters. 
 * **Python API** - which contains all the machine learning algorithms that are 
@@ -172,9 +200,15 @@ have different actions).
         border="10" />
 </p>
 
+<<<<<<< HEAD
 _Example block diagram of ML-Agents for our sample game._
 
 We have yet to discuss how ML-Agents trains behaviors, and what role the
+=======
+_Example block diagram of ML-Agents toolkit for our sample game._
+
+We have yet to discuss how the ML-Agents toolkit trains behaviors, and what role the
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 Python API and External Communicator play. Before we dive into those details,
 let's summarize the earlier components. Each character is attached to an Agent,
 and each Agent is linked to a Brain. The Brain receives observations and
@@ -226,7 +260,11 @@ inference can proceed.
 
 ### Built-in Training and Inference
 
+<<<<<<< HEAD
 As mentioned previously, ML-Agents ships with several implementations of 
+=======
+As mentioned previously, the ML-Agents toolkit ships with several implementations of 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 state-of-the-art algorithms for training intelligent agents. In this mode, the 
 Brain type is set to External during training and Internal during inference. 
 More specifically, during training, all the medics in the scene send their
@@ -260,7 +298,11 @@ tutorial covers this training mode with the **3D Balance Ball** sample environme
 
 In the previous mode, the External Brain type was used for training 
 to generate a TensorFlow model that the Internal Brain type can understand
+<<<<<<< HEAD
 and use. However, any user of ML-Agents can leverage their own algorithms
+=======
+and use. However, any user of the ML-Agents toolkit can leverage their own algorithms
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 for both training and inference. In this case, the Brain type would be set
 to External for both training and inferences phases and the behaviors of
 all the Agents in the scene will be controlled within Python.
@@ -303,7 +345,11 @@ we allow the agent to quickly update the random policy to a more meaningful
 one that is successively improved as the environment gradually increases in
 complexity. In our example, we can imagine first training the medic when each 
 team only contains one player, and then iteratively increasing the number of
+<<<<<<< HEAD
 players (i.e. the environment complexity). ML-Agents supports setting
+=======
+players (i.e. the environment complexity). The ML-Agents toolkit supports setting
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 custom environment parameters within the Academy. This allows
 elements of the environment related to difficulty or complexity to be
 dynamically adjusted based on training progress.
@@ -322,7 +368,11 @@ in this mode, the Brain type during training is set to Player and all the
 actions performed with the controller (in addition to the agent observations)
 will be recorded and sent to the Python API. The imitation learning algorithm
 will then use these pairs of observations and actions from the human player
+<<<<<<< HEAD
 to learn a policy.
+=======
+to learn a policy. [Video Link](https://youtu.be/kpb8ZkMBFYs).
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 The [Training with Imitation Learning](Training-Imitation-Learning.md) tutorial covers this 
 training mode with the **Banana Collector** sample environment.
@@ -369,11 +419,19 @@ giraffes, or an autonomous driving simulation within an urban environment.
 
 ## Additional Features
 
+<<<<<<< HEAD
 Beyond the flexible training scenarios available, ML-Agents includes 
 additional features which improve the flexibility and interpretability of the
 training process.
 
 * **On Demand Decision Making** - With ML-Agents it is possible to have agents 
+=======
+Beyond the flexible training scenarios available, the ML-Agents toolkit includes 
+additional features which improve the flexibility and interpretability of the
+training process.
+
+* **On Demand Decision Making** - With the ML-Agents toolkit it is possible to have agents 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 request decisions only when needed as opposed to requesting decisions at 
 every step of the environment. This enables training of turn based games, 
 games where agents 
@@ -403,7 +461,11 @@ agent’s behavior. You can learn more about using the Monitor class
 [here](Feature-Monitor.md).
 
 * **Complex Visual Observations** - Unlike other platforms, where the agent’s
+<<<<<<< HEAD
 observation might be limited to a single vector or image, ML-Agents allows
+=======
+observation might be limited to a single vector or image, the ML-Agents toolkit allows
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 multiple cameras to be used for observations per agent. This enables agents to
 learn to integrate information from multiple visual streams. This can be
 helpful in several scenarios such as training a self-driving car which requires 
@@ -428,18 +490,35 @@ the broadcasting feature
 * **Docker Set-up (Experimental)** - To facilitate setting up ML-Agents
 without installing Python or TensorFlow directly, we provide a 
 [guide](Using-Docker.md) on how
+<<<<<<< HEAD
 to create and run a Docker container. Due to limitations on rendering visual
 observations, this feature is marked experimental.
 
 * **Cloud Training on AWS** - To facilitate using ML-Agents on
+=======
+to create and run a Docker container.
+
+* **Cloud Training on AWS** - To facilitate using the ML-Agents toolkit on
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 Amazon Web Services (AWS) machines, we provide a 
 [guide](Training-on-Amazon-Web-Service.md)
 on how to set-up EC2 instances in addition to a public pre-configured Amazon 
 Machine Image (AMI).
 
+<<<<<<< HEAD
 ## Summary and Next Steps
 
 To briefly summarize: ML-Agents enables games and simulations built in Unity
+=======
+* **Cloud Training on Microsoft Azure** - To facilitate using the ML-Agents toolkit on
+Azure machines, we provide a 
+[guide](Training-on-Microsoft-Azure.md)
+on how to set-up virtual machine instances in addition to a pre-configured data science image.
+
+## Summary and Next Steps
+
+To briefly summarize: The ML-Agents toolkit enables games and simulations built in Unity
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 to serve as the platform for training intelligent agents. It is designed
 to enable a large variety of training modes and scenarios and comes packed
 with several features to enable researchers and developers to leverage

@@ -1,11 +1,20 @@
 # Getting Started with the 3D Balance Ball Environment
 
+<<<<<<< HEAD
 This tutorial walks through the end-to-end process of opening an ML-Agents 
 example environment in Unity, building the Unity executable, training an agent 
 in it, and finally embedding the trained model into the Unity environment. 
 
 ML-Agents includes a number of [example environments](Learning-Environment-Examples.md) 
 which you can examine to help understand the different ways in which ML-Agents 
+=======
+This tutorial walks through the end-to-end process of opening a ML-Agents toolkit
+example environment in Unity, building the Unity executable, training an agent 
+in it, and finally embedding the trained model into the Unity environment. 
+
+The ML-Agents toolkit includes a number of [example environments](Learning-Environment-Examples.md) 
+which you can examine to help understand the different ways in which the ML-Agents toolkit 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 can be used. These environments can also serve as templates for new 
 environments or as ways to test new ML algorithms. After reading this tutorial, 
 you should be able to explore and build the example environments.
@@ -24,7 +33,11 @@ Let's get started!
 
 ## Installation
 
+<<<<<<< HEAD
 In order to install and set up ML-Agents, the Python dependencies and Unity, 
+=======
+In order to install and set up the ML-Agents toolkit, the Python dependencies and Unity, 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 see the [installation instructions](Installation.md).
 
 ## Understanding a Unity Environment (3D Balance Ball)
@@ -108,7 +121,11 @@ when you embed the trained model in the Unity application, you will change the
 **Vector Observation Space**
 
 Before making a decision, an agent collects its observation about its state 
+<<<<<<< HEAD
 in the world. ML-Agents classifies vector observations into two types:
+=======
+in the world. The ML-Agents toolkit classifies vector observations into two types:
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 **Continuous** and **Discrete**. The **Continuous** vector observation space 
 collects observations in a vector of floating point numbers. The **Discrete** 
 vector observation space is an index into a table of states. Most of the example
@@ -124,7 +141,11 @@ values are defined in the agent's `CollectObservations()` function.)
 **Vector Action Space**
 
 An agent is given instructions from the brain in the form of *actions*. Like 
+<<<<<<< HEAD
 states, ML-Agents classifies actions into two types: the **Continuous** 
+=======
+states, ML-Agents toolkit classifies actions into two types: the **Continuous** 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 vector action space is a vector of numbers that can vary continuously. What 
 each element of the vector means is defined by the agent logic (the PPO
 training process just learns what values are better given particular state 
@@ -183,6 +204,7 @@ negative reward for dropping the ball. An agent is also marked as done when it
 drops the ball so that it will reset with a new ball for the next simulation
 step.
 
+<<<<<<< HEAD
 ## Building the Environment
 
 The first step is to open the Unity scene containing the 3D Balance Ball
@@ -243,6 +265,11 @@ API work as expected, you can use the `python/Basics`
 This notebook contains a simple walkthrough of the functionality of the API. 
 Within `Basics`, be sure to set `env_name` to the name of the environment file 
 you built earlier.
+=======
+## Training the Brain with Reinforcement Learning
+
+Now that we have an environment, we can perform the training. 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 ### Training with PPO
 
@@ -250,7 +277,11 @@ In order to train an agent to correctly balance the ball, we will use a
 Reinforcement Learning algorithm called Proximal Policy Optimization (PPO). 
 This is a method that has been shown to be safe, efficient, and more general 
 purpose than many other RL algorithms, as such we have chosen it as the 
+<<<<<<< HEAD
 example algorithm for use with ML-Agents. For more information on PPO, 
+=======
+example algorithm for use with ML-Agents toolkit. For more information on PPO, 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 OpenAI has a recent [blog post](https://blog.openai.com/openai-baselines-ppo/) 
 explaining it.
 
@@ -258,15 +289,20 @@ explaining it.
 To train the agents within the Ball Balance environment, we will be using the python 
 package. We have provided a convenient Python wrapper script called `learn.py` which accepts arguments used to configure both training and inference phases.
 
+<<<<<<< HEAD
 
 We will pass to this script the path of the environment executable that we just built. (Optionally) We can
 use `run_id` to identify the experiment and create a folder where the model and summary statistics are stored. When 
 using TensorBoard to observe the training statistics, it helps to set this to a sequential value 
+=======
+We can use `run_id` to identify the experiment and create a folder where the model and summary statistics are stored. When using TensorBoard to observe the training statistics, it helps to set this to a sequential value 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 for each training run. In other words, "BalanceBall1" for the first run, 
 "BalanceBall2" or the second, and so on. If you don't, the summaries for 
 every training run are saved to the same directory and will all be included 
 on the same graph.
 
+<<<<<<< HEAD
 To summarize, go to your command line, enter the `ml-agents` directory and type: 
 
 ```python
@@ -275,10 +311,27 @@ python3 python/learn.py <env_file_path> --run-id=<run-identifier> --train
 **Note**: If you're using Anaconda, don't forget to activate the ml-agents environment first.
 
 The `--train` flag tells ML-Agents to run in training mode. `env_file_path` should be the path to the Unity executable that was just created. 
+=======
+To summarize, go to your command line, enter the `ml-agents/python` directory and type: 
+
+```
+python3 learn.py --run-id=<run-identifier> --train 
+```
+
+When the message _"Start training by pressing the Play button in the Unity Editor"_ is displayed on the screen, you can press the :arrow_forward: button in Unity to start training in the Editor.
+
+**Note**: If you're using Anaconda, don't forget to activate the ml-agents environment first.
+
+The `--train` flag tells the ML-Agents toolkit to run in training mode. 
+
+**Note**: You can train using an executable rather than the Editor. To do so, follow the intructions in 
+[Using an Execuatble](Learning-Environment-Executable.md).
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 
 ### Observing Training Progress
 
+<<<<<<< HEAD
 Once you start training using `learn.py` in the way described in the previous section, the `ml-agents` folder will 
 contain a `summaries` directory. In order to observe the training process 
 in more detail, you can use TensorBoard. From the command line run:
@@ -286,6 +339,15 @@ in more detail, you can use TensorBoard. From the command line run:
 `tensorboard --logdir=summaries`
 
 Then navigate to `localhost:6006`.
+=======
+Once you start training using `learn.py` in the way described in the previous section, the `ml-agents/python` folder will 
+contain a `summaries` directory. In order to observe the training process 
+in more detail, you can use TensorBoard. From the command line navigate to `ml-agents/python` folder and run:
+
+`tensorboard --logdir=summaries`
+
+Then navigate to `localhost:6006` in your browser.
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 From TensorBoard, you will see the summary statistics:
 
@@ -325,6 +387,7 @@ Because TensorFlowSharp support is still experimental, it is disabled by
 default. In order to enable it, you must follow these steps. Please note that 
 the `Internal` Brain mode will only be available once completing these steps.
 
+<<<<<<< HEAD
 1. Make sure the TensorFlowSharp plugin is in your `Assets` folder. A Plugins 
 folder which includes TF# can be downloaded 
 [here](https://s3.amazonaws.com/unity-ml-agents/0.3/TFSharpPlugin.unitypackage). 
@@ -360,3 +423,11 @@ If you followed these steps correctly, you should now see the trained model
 being used to control the behavior of the balance ball within the Editor 
 itself. From here you can re-build the Unity binary, and run it standalone 
 with your agent's new learned behavior built right in.
+=======
+To set up the TensorFlowSharp Support, follow [Setting up ML-Agents Toolkit within Unity](Basic-Guide.md#setting-up-ml-agents-within-unity) section.
+of the Basic Guide page.
+
+### Embedding the trained model into Unity
+
+To embed the trained model into Unity, follow the later part of [Training the Brain with Reinforcement Learning](Basic-Guide.md#training-the-brain-with-reinforcement-learning) section of the Basic Buides page. 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712

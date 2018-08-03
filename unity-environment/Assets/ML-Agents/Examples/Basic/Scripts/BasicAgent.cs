@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< HEAD
+=======
+using MLAgents;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 public class BasicAgent : Agent
 {
@@ -28,12 +32,30 @@ public class BasicAgent : Agent
 
     public override void AgentAction(float[] vectorAction, string textAction)
 	{
+<<<<<<< HEAD
         float movement = vectorAction[0];
 		int direction = 0;
 		if (movement == 0) { direction = -1; }
 		if (movement == 1) { direction = 1; }
 
         position += direction;
+=======
+        var movement = (int)vectorAction[0];
+	    
+		int direction = 0;
+	    
+		switch (movement)
+		{
+		    case 0:
+		        direction = -1;
+		        break;
+		    case 1:
+		        direction = 1;
+		        break;
+		}
+
+	    position += direction;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         if (position < minPosition) { position = minPosition; }
         if (position > maxPosition) { position = maxPosition; }
 

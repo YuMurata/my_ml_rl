@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 # # Unity ML Agents
 import logging
 
 import tensorflow as tf
+=======
+# # Unity ML-Agents Toolkit
+import logging
+
+import tensorflow as tf
+import numpy as np
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 from unityagents import UnityException, AllBrainInfo
 
@@ -31,6 +39,11 @@ class Trainer(object):
         self.trainer_parameters = trainer_parameters
         self.is_training = training
         self.sess = sess
+<<<<<<< HEAD
+=======
+        self.stats = {}
+        self.summary_writer = None
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     def __str__(self):
         return '''Empty Trainer'''
@@ -73,6 +86,7 @@ class Trainer(object):
         """
         raise UnityTrainerException("The get_last_reward property was not implemented.")
 
+<<<<<<< HEAD
     def increment_step(self):
         """
         Increment the step count of the trainer
@@ -84,6 +98,13 @@ class Trainer(object):
         Updates the last reward
         """
         raise UnityTrainerException("The update_last_reward method was not implemented.")
+=======
+    def increment_step_and_update_last_reward(self):
+        """
+        Increment the step count of the trainer and updates the last reward
+        """
+        raise UnityTrainerException("The increment_step_and_update_last_reward method was not implemented.")
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     def take_action(self, all_brain_info: AllBrainInfo):
         """
@@ -103,11 +124,20 @@ class Trainer(object):
         """
         raise UnityTrainerException("The add_experiences method was not implemented.")
 
+<<<<<<< HEAD
     def process_experiences(self, info: AllBrainInfo):
         """
         Checks agent histories for processing condition, and processes them as necessary.
         Processing involves calculating value and advantage targets for model updating step.
         :param info: Dictionary of all current brains and corresponding BrainInfo.
+=======
+    def process_experiences(self, current_info: AllBrainInfo, next_info: AllBrainInfo):
+        """
+        Checks agent histories for processing condition, and processes them as necessary.
+        Processing involves calculating value and advantage targets for model updating step.
+        :param current_info: Dictionary of all current-step brains and corresponding BrainInfo.
+        :param next_info: Dictionary of all next-step brains and corresponding BrainInfo.
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         """
         raise UnityTrainerException("The process_experiences method was not implemented.")
 
@@ -136,7 +166,29 @@ class Trainer(object):
         Saves training statistics to Tensorboard.
         :param lesson_number: The lesson the trainer is at.
         """
+<<<<<<< HEAD
         raise UnityTrainerException("The write_summary method was not implemented.")
+=======
+        if (self.get_step % self.trainer_parameters['summary_freq'] == 0 and self.get_step != 0 and
+                self.is_training and self.get_step <= self.get_max_steps):
+            if len(self.stats['cumulative_reward']) > 0:
+                mean_reward = np.mean(self.stats['cumulative_reward'])
+                logger.info(" {}: Step: {}. Mean Reward: {:0.3f}. Std of Reward: {:0.3f}."
+                            .format(self.brain_name, self.get_step,
+                                    mean_reward, np.std(self.stats['cumulative_reward'])))
+            else:
+                logger.info(" {}: Step: {}. No episode was completed since last summary."
+                            .format(self.brain_name, self.get_step))
+            summary = tf.Summary()
+            for key in self.stats:
+                if len(self.stats[key]) > 0:
+                    stat_mean = float(np.mean(self.stats[key]))
+                    summary.value.add(tag='Info/{}'.format(key), simple_value=stat_mean)
+                    self.stats[key] = []
+            summary.value.add(tag='Info/Lesson', simple_value=lesson_number)
+            self.summary_writer.add_summary(summary, self.get_step)
+            self.summary_writer.flush()
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     def write_tensorboard_text(self, key, input_dict):
         """
@@ -146,9 +198,13 @@ class Trainer(object):
         :param input_dict: A dictionary that will be displayed in a table on Tensorboard.
         """
         try:
+<<<<<<< HEAD
             s_op = tf.summary.text(key,
                                    tf.convert_to_tensor(([[str(x), str(input_dict[x])] for x in input_dict]))
                                    )
+=======
+            s_op = tf.summary.text(key, tf.convert_to_tensor(([[str(x), str(input_dict[x])] for x in input_dict])))
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
             s = self.sess.run(s_op)
             self.summary_writer.add_summary(s, self.get_step)
         except:

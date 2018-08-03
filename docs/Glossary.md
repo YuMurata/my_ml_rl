@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # ML-Agents Glossary
+=======
+# ML-Agents Toolkit Glossary
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
  * **Academy** - Unity Component which controls timing, reset, and 
  training/inference settings of the environment. 

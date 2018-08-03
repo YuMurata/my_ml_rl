@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< HEAD
+=======
+using MLAgents;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 public class BananaAgent : Agent
 {
@@ -14,7 +18,12 @@ public class BananaAgent : Agent
     bool shoot;
     float frozenTime;
     float effectTime;
+<<<<<<< HEAD
     Rigidbody agentRB;
+=======
+    Rigidbody agentRb;
+    private int bananas;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     // Speed of agent rotation.
     public float turnSpeed = 300;
@@ -24,15 +33,27 @@ public class BananaAgent : Agent
     public Material normalMaterial;
     public Material badMaterial;
     public Material goodMaterial;
+<<<<<<< HEAD
     int bananas;
     public GameObject myLaser;
     public bool contribute;
     RayPerception rayPer;
+=======
+    public Material frozenMaterial;
+    public GameObject myLaser;
+    public bool contribute;
+    private RayPerception rayPer;
+    public bool useVectorObs;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     public override void InitializeAgent()
     {
         base.InitializeAgent();
+<<<<<<< HEAD
         agentRB = GetComponent<Rigidbody>();
+=======
+        agentRb = GetComponent<Rigidbody>();
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         Monitor.verticalOffset = 1f;
         myArea = area.GetComponent<BananaArea>();
         rayPer = GetComponent<RayPerception>();
@@ -41,6 +62,7 @@ public class BananaAgent : Agent
 
     public override void CollectObservations()
     {
+<<<<<<< HEAD
         float rayDistance = 50f;
         float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
         string[] detectableObjects = { "banana", "agent", "wall", "badBanana", "frozenAgent" };
@@ -58,6 +80,28 @@ public class BananaAgent : Agent
         byte G = (byte)((HexVal >> 8) & 0xFF);
         byte B = (byte)((HexVal) & 0xFF);
         return new Color32(R, G, B, 255);
+=======
+        if (useVectorObs)
+        {
+            float rayDistance = 50f;
+            float[] rayAngles = { 20f, 90f, 160f, 45f, 135f, 70f, 110f };
+            string[] detectableObjects = { "banana", "agent", "wall", "badBanana", "frozenAgent" };
+            AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
+            Vector3 localVelocity = transform.InverseTransformDirection(agentRb.velocity);
+            AddVectorObs(localVelocity.x);
+            AddVectorObs(localVelocity.z);
+            AddVectorObs(System.Convert.ToInt32(frozen));
+            AddVectorObs(System.Convert.ToInt32(shoot));
+        }
+    }
+
+    public Color32 ToColor(int hexVal)
+    {
+        byte r = (byte)((hexVal >> 16) & 0xFF);
+        byte g = (byte)((hexVal >> 8) & 0xFF);
+        byte b = (byte)(hexVal & 0xFF);
+        return new Color32(r, g, b, 255);
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
 
     public void MoveAgent(float[] act)
@@ -83,7 +127,10 @@ public class BananaAgent : Agent
         Vector3 dirToGo = Vector3.zero;
         Vector3 rotateDir = Vector3.zero;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         if (!frozen)
         {
             bool shootCommand = false;
@@ -91,11 +138,19 @@ public class BananaAgent : Agent
             {
                 dirToGo = transform.forward * Mathf.Clamp(act[0], -1f, 1f);
                 rotateDir = transform.up * Mathf.Clamp(act[1], -1f, 1f);
+<<<<<<< HEAD
                 shootCommand = Mathf.Clamp(act[2], 0f, 1f) > 0.5f;
             }
             else
             {
                 switch ((int)(act[0]))
+=======
+                shootCommand = Mathf.Clamp(act[2], -1f, 1f) > 0.5f;
+            }
+            else
+            {
+                switch ((int)act[0])
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
                 {
                     case 1:
                         dirToGo = transform.forward;
@@ -115,6 +170,7 @@ public class BananaAgent : Agent
             {
                 shoot = true;
                 dirToGo *= 0.5f;
+<<<<<<< HEAD
                 agentRB.velocity *= 0.75f;
             }
             agentRB.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
@@ -124,6 +180,17 @@ public class BananaAgent : Agent
         if (agentRB.velocity.sqrMagnitude > 25f) // slow it down
         {
             agentRB.velocity *= 0.95f;
+=======
+                agentRb.velocity *= 0.75f;
+            }
+            agentRb.AddForce(dirToGo * moveSpeed, ForceMode.VelocityChange);
+            transform.Rotate(rotateDir, Time.fixedDeltaTime * turnSpeed);
+        }
+
+        if (agentRb.velocity.sqrMagnitude > 25f) // slow it down
+        {
+            agentRb.velocity *= 0.95f;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         }
 
         if (shoot)
@@ -134,7 +201,11 @@ public class BananaAgent : Agent
             RaycastHit hit;
             if (Physics.SphereCast(transform.position, 2f, position, out hit, 25f))
             {
+<<<<<<< HEAD
                 if (hit.collider.gameObject.tag == "agent")
+=======
+                if (hit.collider.gameObject.CompareTag("agent"))
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
                 {
                     hit.collider.gameObject.GetComponent<BananaAgent>().Freeze();
                 }
@@ -153,7 +224,11 @@ public class BananaAgent : Agent
         gameObject.tag = "frozenAgent";
         frozen = true;
         frozenTime = Time.time;
+<<<<<<< HEAD
         gameObject.GetComponent<Renderer>().material.color = Color.black;
+=======
+        gameObject.GetComponent<Renderer>().material = frozenMaterial;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
 
 
@@ -203,7 +278,11 @@ public class BananaAgent : Agent
         Unpoison();
         Unsatiate();
         shoot = false;
+<<<<<<< HEAD
         agentRB.velocity = Vector3.zero;
+=======
+        agentRb.velocity = Vector3.zero;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         bananas = 0;
         myLaser.transform.localScale = new Vector3(0f, 0f, 0f);
         transform.position = new Vector3(Random.Range(-myArea.range, myArea.range),
@@ -236,10 +315,13 @@ public class BananaAgent : Agent
                 myAcademy.totalScore -= 1;
             }
         }
+<<<<<<< HEAD
         if (collision.gameObject.CompareTag("wall"))
         {
             Done();
         }
+=======
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
 
     public override void AgentOnDone()

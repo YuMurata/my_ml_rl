@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< HEAD
+=======
+using MLAgents;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 public class HallwayAgent : Agent
 {
@@ -10,6 +14,10 @@ public class HallwayAgent : Agent
     public GameObject redGoal;
     public GameObject orangeBlock;
     public GameObject redBlock;
+<<<<<<< HEAD
+=======
+    public bool useVectorObs;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     RayPerception rayPer;
     Rigidbody shortBlockRB;
     Rigidbody agentRB;
@@ -22,7 +30,10 @@ public class HallwayAgent : Agent
     {
         base.InitializeAgent();
         academy = FindObjectOfType<HallwayAcademy>();
+<<<<<<< HEAD
         brain = FindObjectOfType<Brain>();
+=======
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         rayPer = GetComponent<RayPerception>();
         agentRB = GetComponent<Rigidbody>();
         groundRenderer = ground.GetComponent<Renderer>();
@@ -31,11 +42,22 @@ public class HallwayAgent : Agent
 
     public override void CollectObservations()
     {
+<<<<<<< HEAD
         float rayDistance = 12f;
         float[] rayAngles = { 20f, 60f, 90f, 120f, 160f };
         string[] detectableObjects = { "orangeGoal", "redGoal", "orangeBlock", "redBlock", "wall" };
         AddVectorObs((float)GetStepCount() / (float)agentParameters.maxStep);
         AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
+=======
+        if (useVectorObs)
+        {
+            float rayDistance = 12f;
+            float[] rayAngles = { 20f, 60f, 90f, 120f, 160f };
+            string[] detectableObjects = { "orangeGoal", "redGoal", "orangeBlock", "redBlock", "wall" };
+            AddVectorObs(GetStepCount() / (float)agentParameters.maxStep);
+            AddVectorObs(rayPer.Perceive(rayDistance, rayAngles, detectableObjects, 0f, 0f));
+        }
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
 
     IEnumerator GoalScoredSwapGroundMaterial(Material mat, float time)

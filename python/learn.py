@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # # Unity ML Agents
+=======
+# # Unity ML-Agents Toolkit
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 # ## ML-Agent Learning
 
 import logging
@@ -8,11 +12,37 @@ from docopt import docopt
 
 from unitytrainers.trainer_controller import TrainerController
 
+<<<<<<< HEAD
 if __name__ == '__main__':
+=======
+
+if __name__ == '__main__':
+    print('''
+    
+                    ▄▄▄▓▓▓▓
+               ╓▓▓▓▓▓▓█▓▓▓▓▓
+          ,▄▄▄m▀▀▀'  ,▓▓▓▀▓▓▄                           ▓▓▓  ▓▓▌
+        ▄▓▓▓▀'      ▄▓▓▀  ▓▓▓      ▄▄     ▄▄ ,▄▄ ▄▄▄▄   ,▄▄ ▄▓▓▌▄ ▄▄▄    ,▄▄
+      ▄▓▓▓▀        ▄▓▓▀   ▐▓▓▌     ▓▓▌   ▐▓▓ ▐▓▓▓▀▀▀▓▓▌ ▓▓▓ ▀▓▓▌▀ ^▓▓▌  ╒▓▓▌
+    ▄▓▓▓▓▓▄▄▄▄▄▄▄▄▓▓▓      ▓▀      ▓▓▌   ▐▓▓ ▐▓▓    ▓▓▓ ▓▓▓  ▓▓▌   ▐▓▓▄ ▓▓▌
+    ▀▓▓▓▓▀▀▀▀▀▀▀▀▀▀▓▓▄     ▓▓      ▓▓▌   ▐▓▓ ▐▓▓    ▓▓▓ ▓▓▓  ▓▓▌    ▐▓▓▐▓▓
+      ^█▓▓▓        ▀▓▓▄   ▐▓▓▌     ▓▓▓▓▄▓▓▓▓ ▐▓▓    ▓▓▓ ▓▓▓  ▓▓▓▄    ▓▓▓▓`
+        '▀▓▓▓▄      ^▓▓▓  ▓▓▓       └▀▀▀▀ ▀▀ ^▀▀    `▀▀ `▀▀   '▀▀    ▐▓▓▌
+           ▀▀▀▀▓▄▄▄   ▓▓▓▓▓▓,                                      ▓▓▓▓▀
+               `▀█▓▓▓▓▓▓▓▓▓▌
+                    ¬`▀▀▀█▓
+                    
+''')
+
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     logger = logging.getLogger("unityagents")
     _USAGE = '''
     Usage:
       learn (<env>) [options]
+<<<<<<< HEAD
+=======
+      learn [options]
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
       learn --help
 
     Options:
@@ -26,7 +56,12 @@ if __name__ == '__main__':
       --slow                     Whether to run the game at training speed [default: False].
       --train                    Whether to train model, or only run inference [default: False].
       --worker-id=<n>            Number to add to communication port (5005). Used for multi-environment [default: 0].
+<<<<<<< HEAD
       --docker-target-name=<dt>       Docker Volume to store curriculum, executable and model files [default: Empty].
+=======
+      --docker-target-name=<dt>  Docker Volume to store curriculum, executable and model files [default: Empty].
+      --no-graphics              Whether to run the Unity simulator in no-graphics mode [default: False].
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     '''
 
     options = docopt(_USAGE)
@@ -51,6 +86,10 @@ if __name__ == '__main__':
         curriculum_file = None
     lesson = int(options['--lesson'])
     fast_simulation = not bool(options['--slow'])
+<<<<<<< HEAD
+=======
+    no_graphics = options['--no-graphics']
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
     # Constants
     # Assumption that this yaml is present in same dir as this file
@@ -58,5 +97,10 @@ if __name__ == '__main__':
     TRAINER_CONFIG_PATH = os.path.abspath(os.path.join(base_path, "trainer_config.yaml"))
 
     tc = TrainerController(env_path, run_id, save_freq, curriculum_file, fast_simulation, load_model, train_model,
+<<<<<<< HEAD
                            worker_id, keep_checkpoints, lesson, seed, docker_target_name, TRAINER_CONFIG_PATH)
+=======
+                           worker_id, keep_checkpoints, lesson, seed, docker_target_name, TRAINER_CONFIG_PATH,
+                           no_graphics)
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     tc.start_learning()

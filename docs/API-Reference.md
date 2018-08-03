@@ -11,7 +11,11 @@ the following command within the `docs/` directory:
 
     doxygen dox-ml-agents.conf
 
+<<<<<<< HEAD
 `dox-ml-agents.conf` is a Doxygen configuration file for ML-Agents
+=======
+`dox-ml-agents.conf` is a Doxygen configuration file for the ML-Agents toolkit
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 that includes the classes that have been properly formatted. 
 The generated HTML files will be placed
 in the `html/` subdirectory. Open `index.html` within that subdirectory to 

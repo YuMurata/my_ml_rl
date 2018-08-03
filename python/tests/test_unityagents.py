@@ -7,6 +7,7 @@ import numpy as np
 
 from unityagents import UnityEnvironment, UnityEnvironmentException, UnityActionException, \
     BrainInfo, Curriculum
+<<<<<<< HEAD
 
 
 def append_length(partial_string):
@@ -81,6 +82,11 @@ dummy_step = ['actions'.encode(),
 }'''),
     append_length('END_OF_MESSAGE:True')]
 
+=======
+from .mock_communicator import MockCommunicator
+
+
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 dummy_curriculum = json.loads('''{
     "measure" : "reward",
     "thresholds" : [10, 20, 50],
@@ -112,6 +118,7 @@ def test_handles_bad_filename():
         UnityEnvironment(' ')
 
 
+<<<<<<< HEAD
 def test_initialization():
     with mock.patch('subprocess.Popen'):
         with mock.patch('socket.socket') as mock_socket:
@@ -196,6 +203,83 @@ def test_close():
                 env.close()
                 assert not env._loaded
                 mock_socket.close.assert_called_once()
+=======
+@mock.patch('unityagents.UnityEnvironment.executable_launcher')
+@mock.patch('unityagents.UnityEnvironment.get_communicator')
+def test_initialization(mock_communicator, mock_launcher):
+    mock_communicator.return_value = MockCommunicator(
+        discrete_action=False, visual_inputs=0)
+    env = UnityEnvironment(' ')
+    with pytest.raises(UnityActionException):
+        env.step([0])
+    assert env.brain_names[0] == 'RealFakeBrain'
+    env.close()
+
+
+@mock.patch('unityagents.UnityEnvironment.executable_launcher')
+@mock.patch('unityagents.UnityEnvironment.get_communicator')
+def test_reset(mock_communicator, mock_launcher):
+    mock_communicator.return_value = MockCommunicator(
+        discrete_action=False, visual_inputs=0)
+    env = UnityEnvironment(' ')
+    brain = env.brains['RealFakeBrain']
+    brain_info = env.reset()
+    env.close()
+    assert not env.global_done
+    assert isinstance(brain_info, dict)
+    assert isinstance(brain_info['RealFakeBrain'], BrainInfo)
+    assert isinstance(brain_info['RealFakeBrain'].visual_observations, list)
+    assert isinstance(brain_info['RealFakeBrain'].vector_observations, np.ndarray)
+    assert len(brain_info['RealFakeBrain'].visual_observations) == brain.number_visual_observations
+    assert brain_info['RealFakeBrain'].vector_observations.shape[0] == \
+           len(brain_info['RealFakeBrain'].agents)
+    assert brain_info['RealFakeBrain'].vector_observations.shape[1] == \
+           brain.vector_observation_space_size * brain.num_stacked_vector_observations
+
+
+@mock.patch('unityagents.UnityEnvironment.executable_launcher')
+@mock.patch('unityagents.UnityEnvironment.get_communicator')
+def test_step(mock_communicator, mock_launcher):
+    mock_communicator.return_value = MockCommunicator(
+        discrete_action=False, visual_inputs=0)
+    env = UnityEnvironment(' ')
+    brain = env.brains['RealFakeBrain']
+    brain_info = env.reset()
+    brain_info = env.step([0] * brain.vector_action_space_size * len(brain_info['RealFakeBrain'].agents))
+    with pytest.raises(UnityActionException):
+        env.step([0])
+    brain_info = env.step([-1] * brain.vector_action_space_size * len(brain_info['RealFakeBrain'].agents))
+    with pytest.raises(UnityActionException):
+        env.step([0] * brain.vector_action_space_size * len(brain_info['RealFakeBrain'].agents))
+    env.close()
+    assert env.global_done
+    assert isinstance(brain_info, dict)
+    assert isinstance(brain_info['RealFakeBrain'], BrainInfo)
+    assert isinstance(brain_info['RealFakeBrain'].visual_observations, list)
+    assert isinstance(brain_info['RealFakeBrain'].vector_observations, np.ndarray)
+    assert len(brain_info['RealFakeBrain'].visual_observations) == brain.number_visual_observations
+    assert brain_info['RealFakeBrain'].vector_observations.shape[0] == \
+           len(brain_info['RealFakeBrain'].agents)
+    assert brain_info['RealFakeBrain'].vector_observations.shape[1] == \
+           brain.vector_observation_space_size * brain.num_stacked_vector_observations
+
+    print("\n\n\n\n\n\n\n" + str(brain_info['RealFakeBrain'].local_done))
+    assert not brain_info['RealFakeBrain'].local_done[0]
+    assert brain_info['RealFakeBrain'].local_done[2]
+
+
+@mock.patch('unityagents.UnityEnvironment.executable_launcher')
+@mock.patch('unityagents.UnityEnvironment.get_communicator')
+def test_close(mock_communicator, mock_launcher):
+    comm = MockCommunicator(
+        discrete_action=False, visual_inputs=0)
+    mock_communicator.return_value = comm
+    env = UnityEnvironment(' ')
+    assert env._loaded
+    env.close()
+    assert not env._loaded
+    assert comm.has_been_closed
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 
 def test_curriculum():

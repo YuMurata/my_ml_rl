@@ -24,7 +24,11 @@ class Buffer(dict):
 
         class AgentBufferField(list):
             """
+<<<<<<< HEAD
             AgentBufferField is a list of numpy arrays. When an agent collects a field, you can add it to his 
+=======
+            AgentBufferField is a list of numpy arrays. When an agent collects a field, you can add it to his
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
             AgentBufferField with the append method.
             """
 
@@ -46,6 +50,7 @@ class Buffer(dict):
                 self[:] = []
                 self[:] = list(np.array(data))
 
+<<<<<<< HEAD
             def get_batch(self, batch_size=None, training_length=None, sequential=True):
                 """
                 Retrieve the last batch_size elements of length training_length
@@ -55,12 +60,28 @@ class Buffer(dict):
                 :param training_length: The length of the sequence to be retrieved. If
                 None: only takes one element.
                 :param sequential: If true and training_length is not None: the elements 
+=======
+            def get_batch(self, batch_size=None, training_length=1, sequential=True):
+                """
+                Retrieve the last batch_size elements of length training_length
+                from the list of np.array
+                :param batch_size: The number of elements to retrieve. If None:
+                All elements will be retrieved.
+                :param training_length: The length of the sequence to be retrieved. If
+                None: only takes one element.
+                :param sequential: If true and training_length is not None: the elements
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
                 will not repeat in the sequence. [a,b,c,d,e] with training_length = 2 and
                 sequential=True gives [[0,a],[b,c],[d,e]]. If sequential=False gives
                 [[a,b],[b,c],[c,d],[d,e]]
                 """
+<<<<<<< HEAD
                 if training_length is None:
                     # When the training length is None, the method returns a list of elements,
+=======
+                if training_length == 1:
+                    # When the training length is 1, the method returns a list of elements,
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
                     # not a list of sequences of elements.
                     if batch_size is None:
                         # If batch_size is None : All the elements of the AgentBufferField are returned.
@@ -139,7 +160,11 @@ class Buffer(dict):
         def check_length(self, key_list):
             """
             Some methods will require that some fields have the same length.
+<<<<<<< HEAD
             check_length will return true if the fields in key_list 
+=======
+            check_length will return true if the fields in key_list
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
             have the same length.
             :param key_list: The fields which length will be compared
             """

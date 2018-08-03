@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+<<<<<<< HEAD
+=======
+using MLAgents;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 
 public class GridAcademy : Academy

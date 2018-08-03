@@ -8,7 +8,11 @@ In this example, we will train a ball to roll to a randomly placed cube. The bal
 
 ## Overview
 
+<<<<<<< HEAD
 Using ML-Agents in a Unity project involves the following basic steps:
+=======
+Using the ML-Agents toolkit in a Unity project involves the following basic steps:
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 1. Create an environment for your agents to live in. An environment can range from a simple physical simulation containing a few objects to an entire game or ecosystem.
 2. Implement an Academy subclass and add it to a GameObject in the Unity scene containing the environment. This GameObject will serve as the parent for any Brain objects in the scene. Your Academy class can implement a few optional methods to update the scene independently of any agents. For example, you can add, move, or delete agents and other entities in the environment.
@@ -88,7 +92,11 @@ You can adjust the camera angles to give a better view of the scene at runtime. 
 
 ## Implement an Academy
 
+<<<<<<< HEAD
 The Academy object coordinates the ML-Agents in the scene and drives the decision-making portion of the simulation loop. Every ML-Agent scene needs one Academy instance. Since the base Academy classis abstract, you must make your own subclass even if you don't need to use any of the methods for a particular environment.
+=======
+The Academy object coordinates the ML-Agents in the scene and drives the decision-making portion of the simulation loop. Every ML-Agent scene needs one Academy instance. Since the base Academy class is abstract, you must make your own subclass even if you don't need to use any of the methods for a particular environment.
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 First, add a New Script component to the Academy GameObject created earlier: 
 
@@ -107,6 +115,11 @@ Next, edit the new `RollerAcademy` script:
 In such a basic scene, we don't need the Academy to initialize, reset, or otherwise control any objects in the environment so we have the simplest possible Academy implementation:
 
 ```csharp
+<<<<<<< HEAD
+=======
+using MLAgents;
+
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 public class RollerAcademy : Academy { }
 ```
 
@@ -159,6 +172,10 @@ So far, our RollerAgent script looks like:
 ```csharp
 using System.Collections.Generic;
 using UnityEngine;
+<<<<<<< HEAD
+=======
+using MLAgents;
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 public class RollerAgent : Agent 
 {
@@ -230,7 +247,10 @@ All the values are divided by 5 to normalize the inputs to the neural network to
 In total, the state observation contains 8 values and we need to use the continuous state space when we get around to setting the Brain properties:
 
 ```csharp
+<<<<<<< HEAD
 List<float> observation = new List<float>();
+=======
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 public override void CollectObservations()
 {
     // Calculate relative position
@@ -256,12 +276,17 @@ The final part of the Agent code is the Agent.AgentAction() function, which rece
 
 **Actions**
 
+<<<<<<< HEAD
 The decision of the Brain comes in the form of an action array passed to the `AgentAction()` function. The number of elements in this array is determined by the `Vector Action Space Type` and `Vector Action Space Size` settings of the agent's Brain. The RollerAgent uses the continuous vector action space and needs two continuous control signals from the brain. Thus, we will set the Brain `Vector Action Size` to 2. The first element,`action[0]` determines the force applied along the x axis; `action[1]` determines the force applied along the z axis. (If we allowed the agent to move in three dimensions, then we would need to set `Vector Action Size` to 3. Note the Brain really has no idea what the values in the action array mean. The training process just adjusts the action values in response to the observation input and then sees what kind of rewards it gets as a result. 
+=======
+The decision of the Brain comes in the form of an action array passed to the `AgentAction()` function. The number of elements in this array is determined by the `Vector Action Space Type` and `Vector Action Space Size` settings of the agent's Brain. The RollerAgent uses the continuous vector action space and needs two continuous control signals from the brain. Thus, we will set the Brain `Vector Action Size` to 2. The first element,`action[0]` determines the force applied along the x axis; `action[1]` determines the force applied along the z axis. (If we allowed the agent to move in three dimensions, then we would need to set `Vector Action Size` to 3. Each of these values returned by the network are between `-1` and `1.` Note the Brain really has no idea what the values in the action array mean. The training process just adjusts the action values in response to the observation input and then sees what kind of rewards it gets as a result. 
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 The RollerAgent applies the values from the action[] array to its Rigidbody component, `rBody`, using the `Rigidbody.AddForce` function:
 
 ```csharp
 Vector3 controlSignal = Vector3.zero;
+<<<<<<< HEAD
 controlSignal.x = Mathf.Clamp(action[0], -1, 1);
 controlSignal.z = Mathf.Clamp(action[1], -1, 1);
 rBody.AddForce(controlSignal * speed);
@@ -269,6 +294,13 @@ rBody.AddForce(controlSignal * speed);
 
 The agent clamps the action values to the range [-1,1] for two reasons. First, the learning algorithm has less incentive to try very large values (since there won't be any affect on agent behavior), which can avoid numeric instability in the neural network calculations. Second, nothing prevents the neural network from returning excessively large values, so we want to limit them to reasonable ranges in any case.
 
+=======
+controlSignal.x = action[0];
+controlSignal.z = action[1];
+rBody.AddForce(controlSignal * speed);
+```
+
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 **Rewards**
 
 Reinforcement learning requires rewards. Assign rewards in the `AgentAction()` function. The learning algorithm uses the rewards assigned to the agent at each step in the simulation and learning process to determine whether it is giving the agent the optimal actions. You want to reward an agent for completing the assigned task (reaching the Target cube, in this case) and punish the agent if it irrevocably fails (falls off the platform). You can sometimes speed up training with sub-rewards that encourage behavior that helps the agent complete the task. For example, the RollerAgent reward system provides a small reward if the agent moves closer to the target in a step and a small negative reward at each step which encourages the agent to complete its task quickly. 
@@ -281,12 +313,21 @@ float distanceToTarget = Vector3.Distance(this.transform.position,
 // Reached target
 if (distanceToTarget < 1.42f)
 {
+<<<<<<< HEAD
     Done();
     AddReward(1.0f);
 }
 ```
 
 **Note:** When you mark an agent as done, it stops its activity until it is reset. You can have the agent reset immediately, by setting the Agent.ResetOnDone property in the inspector or you can wait for the Academy to reset the environment. This RollerBall environment relies on the `ResetOnDone` mechanism and doesn't set a `Max Steps` limit for the Academy (so it never resets the environment).
+=======
+    AddReward(1.0f);
+    Done();
+}
+```
+
+**Note:** When you mark an agent as done, it stops its activity until it is reset. You can have the agent reset immediately, by setting the Agent.ResetOnDone property to true in the inspector or you can wait for the Academy to reset the environment. This RollerBall environment relies on the `ResetOnDone` mechanism and doesn't set a `Max Steps` limit for the Academy (so it never resets the environment).
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
 To encourage the agent along, we also reward it for getting closer to the target (saving the previous distance measurement between steps):
 
@@ -311,8 +352,13 @@ Finally, to punish the agent for falling off the platform, assign a large negati
 // Fell off platform
 if (this.transform.position.y < -1.0)
 {
+<<<<<<< HEAD
     Done();
     AddReward(-1.0f);
+=======
+    AddReward(-1.0f);
+    Done();
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 }
 ```
 
@@ -333,8 +379,13 @@ public override void AgentAction(float[] vectorAction, string textAction)
     // Reached target
     if (distanceToTarget < 1.42f)
     {
+<<<<<<< HEAD
         Done();
         AddReward(1.0f);
+=======
+        AddReward(1.0f);
+        Done();
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
     
     // Getting closer
@@ -349,15 +400,25 @@ public override void AgentAction(float[] vectorAction, string textAction)
     // Fell off platform
     if (this.transform.position.y < -1.0)
     {
+<<<<<<< HEAD
         Done();
         AddReward(-1.0f);
+=======
+        AddReward(-1.0f);
+        Done();
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     }
     previousDistance = distanceToTarget;
 
     // Actions, size = 2
     Vector3 controlSignal = Vector3.zero;
+<<<<<<< HEAD
     controlSignal.x = Mathf.Clamp(vectorAction[0], -1, 1);
     controlSignal.z = Mathf.Clamp(vectorAction[1], -1, 1);
+=======
+    controlSignal.x = vectorAction[0];
+    controlSignal.z = vectorAction[1];
+>>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     rBody.AddForce(controlSignal * speed);
  }
 ```
