@@ -12,16 +12,20 @@ from unityagents import AllBrainInfo
 from unitytrainers.buffer import Buffer
 from unitytrainers.ppo.models import PPOModel
 from unitytrainers.trainer import UnityTrainerException, Trainer
+from unityagents.environment import UnityEnvironment
 
 from rl_teacher.comparison_collectors import HumanComparisonCollector
+from rl_teacher.predictor import ComparisonRewardPredictor
+from rl_teacher.label_schedules import LabelAnnealer
 
 logger = logging.getLogger("unityagents")
 
+CLIP_LENGTH = 1.5
 
 class PPOTrainer(Trainer):
     """The PPOTrainer is an implementation of the PPO algorythm."""
 
-    def __init__(self, sess, env, brain_name, trainer_parameters, training, seed):
+    def __init__(self, sess, env, brain_name, trainer_parameters, training, seed,num_timesteps,num_labels,pretrain_labels):
         """
         Responsible for collecting experiences and training PPO model.
         :param sess: Tensorflow session.
@@ -87,6 +91,23 @@ class PPOTrainer(Trainer):
         self.summary_writer = tf.summary.FileWriter(self.summary_path)
 
         self.comparison_collector = HumanComparisonCollector(experiment_name=brain_name)
+
+        label_schedule = LabelAnnealer(
+                logger,
+                final_timesteps=num_timesteps,
+                final_labels=num_labels,
+                pretrain_labels=pretrain_labels
+                )
+
+
+        self.predictor = ComparisonRewardPredictor(
+            env,
+            self.summary_writer,
+            comparison_collector=self.comparison_collector,
+            agent_logger=logger,
+            label_schedule=label_schedule,
+            clip_length= CLIP_LENGTH
+        )
 
     def __str__(self):
         return '''Hypermarameters for the PPO Trainer of brain {0}: \n{1}'''.format(
@@ -418,6 +439,48 @@ class PPOTrainer(Trainer):
             self.summary_writer.flush()
 
 
+    def pre_collect_comparison(self,env,n_desired_segments, clip_length_in_seconds):
+        def do_rollout(env:UnityEnvironment):
+            """ Builds a path by running through an environment using a provided function to select actions. """
+            obs, rewards, actions, human_obs = [], [], [], []
+            max_timesteps_per_episode = get_timesteps_per_episode(env)
+            ob = env.reset()
+            # Primary environment loop
+            for i in range(max_timesteps_per_episode):
+                action = 2*np.random.rand(self.model.a_size)-1
+                obs.append(ob)
+                actions.append(action)
+                ob, rew, done, info = env.step(action)
+                rewards.append(rew)
+                human_obs.append(info.get("human_obs"))
+                if done:
+                    break
+            # Build path dictionary
+            path = {
+                "obs": np.array(obs),
+                "original_rewards": np.array(rewards),
+                "actions": np.array(actions),
+                "human_obs": np.array(human_obs)}
+            return path
+
+        segments = []
+        segment_length = int(clip_length_in_seconds * env.fps)
+        while len(segments) < n_desired_segments:
+        path = do_rollout(env, random_action)
+        # Calculate the number of segments to sample from the path
+        # Such that the probability of sampling the same part twice is fairly low.
+        segments_for_this_path = max(1, int(0.25 * len(path["obs"]) / segment_length))
+        for _ in range(segments_for_this_path):
+            segment = sample_segment_from_path(path, segment_length)
+            if segment:
+                segments.append(segment)
+
+            if _verbose and len(segments) % 10 == 0 and len(segments) > 0:
+                print("Collected %s/%s segments" % (len(segments) * _multiplier, n_desired_segments * _multiplier))
+
+    if _verbose:
+        print("Successfully collected %s segments" % (len(segments) * _multiplier))
+    return segments
 def discount_rewards(r, gamma=0.99, value_next=0.0):
     """
     Computes discounted sum of future rewards for use in updating value estimate.
@@ -432,7 +495,6 @@ def discount_rewards(r, gamma=0.99, value_next=0.0):
         running_add = running_add * gamma + r[t]
         discounted_r[t] = running_add
     return discounted_r
-
 
 def get_gae(rewards, value_estimates, value_next=0.0, gamma=0.99, lambd=0.95):
     """
