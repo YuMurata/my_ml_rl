@@ -8,14 +8,15 @@ import os
 import numpy as np
 import tensorflow as tf
 
-from unityagents import AllBrainInfo
+from unityagents.brain import AllBrainInfo, BrainInfo
 from unitytrainers.buffer import Buffer
 from unitytrainers.ppo.models import PPOModel
+from unitytrainers.ppo.rl_teacher.segment_sampling import do_rollout
+from unitytrainers.ppo.rl_teacher.predictor import ComparisonRewardPredictor
 from unitytrainers.trainer import UnityTrainerException, Trainer
 from unityagents.environment import UnityEnvironment
 
 from rl_teacher.comparison_collectors import HumanComparisonCollector
-from rl_teacher.predictor import ComparisonRewardPredictor
 from rl_teacher.label_schedules import LabelAnnealer
 
 logger = logging.getLogger("unityagents")
@@ -118,13 +119,15 @@ class PPOTrainer(Trainer):
                 pretrain_labels=pretrain_labels
                 )
 
+        comparison_collector = HumanComparisonCollector(experiment_name=brain_name)
+        
         self.predictor = ComparisonRewardPredictor(
             env,
             self.summary_writer,
             comparison_collector=self.comparison_collector,
             agent_logger=logger,
             label_schedule=label_schedule,
-            clip_length= CLIP_LENGTH
+            clip_length= CLIP_LENGTH)
 
     def __str__(self):
         return '''Hyperparameters for the PPO Trainer of brain {0}: \n{1}'''.format(
@@ -444,34 +447,11 @@ class PPOTrainer(Trainer):
             for agent_id in self.intrinsic_rewards:
                 self.intrinsic_rewards[agent_id] = 0
 
-    def pre_collect_comparison(self,env,n_desired_segments, clip_length_in_seconds):
-        def do_rollout(env:UnityEnvironment):
-            """ Builds a path by running through an environment using a provided function to select actions. """
-            obs, rewards, actions, human_obs = [], [], [], []
-            max_timesteps_per_episode = get_timesteps_per_episode(env)
-            ob = env.reset()
-            # Primary environment loop
-            for i in range(max_timesteps_per_episode):
-                action = 2*np.random.rand(self.model.a_size)-1
-                obs.append(ob)
-                actions.append(action)
-                ob, rew, done, info = env.step(action)
-                rewards.append(rew)
-                human_obs.append(info.get("human_obs"))
-                if done:
-                    break
-            # Build path dictionary
-            path = {
-                "obs": np.array(obs),
-                "original_rewards": np.array(rewards),
-                "actions": np.array(actions),
-                "human_obs": np.array(human_obs)}
-            return path
-
+    def pre_collect_comparison(self,env,n_desired_segments, clip_length_in_seconds,verbose=True):
         segments = []
         segment_length = int(clip_length_in_seconds * env.fps)
         while len(segments) < n_desired_segments:
-        path = do_rollout(env, random_action)
+            path = do_rollout(env)
         # Calculate the number of segments to sample from the path
         # Such that the probability of sampling the same part twice is fairly low.
         segments_for_this_path = max(1, int(0.25 * len(path["obs"]) / segment_length))
@@ -480,12 +460,12 @@ class PPOTrainer(Trainer):
             if segment:
                 segments.append(segment)
 
-            if _verbose and len(segments) % 10 == 0 and len(segments) > 0:
+            if verbose and len(segments) % 10 == 0 and len(segments) > 0:
                 print("Collected %s/%s segments" % (len(segments) * _multiplier, n_desired_segments * _multiplier))
 
-    if _verbose:
-        print("Successfully collected %s segments" % (len(segments) * _multiplier))
-    return segments
+        if verbose:
+            print("Successfully collected %s segments" % (len(segments) * _multiplier))
+        return segments
 
     def is_ready_update(self):
         """

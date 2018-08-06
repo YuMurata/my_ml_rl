@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "python"
+		},
+		{
+			"path": "C:\\Users\\init\\Documents\\GitHub\\rl-teacher"
 		}
 	],
 	"files.exclude":{

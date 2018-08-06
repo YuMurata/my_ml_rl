@@ -8,12 +8,8 @@ logger = logging.getLogger("unityagents")
 
 class PPOModel(LearningModel):
     def __init__(self, brain, lr=1e-4, h_size=128, epsilon=0.2, beta=1e-3, max_step=5e6,
-<<<<<<< HEAD
-                 normalize=False, use_recurrent=False, num_layers=2, m_size=None):
-=======
                  normalize=False, use_recurrent=False, num_layers=2, m_size=None, use_curiosity=False,
                  curiosity_strength=0.01, curiosity_enc_size=128):
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         """
         Takes a Unity environment and model-specific hyper-parameters and returns the
         appropriate PPO agent model for the environment.
@@ -30,10 +26,7 @@ class PPOModel(LearningModel):
         :param m_size: Size of brain memory.
         """
         LearningModel.__init__(self, m_size, normalize, use_recurrent, brain)
-<<<<<<< HEAD
-=======
         self.use_curiosity = use_curiosity
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         if num_layers < 1:
             num_layers = 1
         self.last_reward, self.new_reward, self.update_reward = self.create_reward_encoder()
@@ -42,15 +35,12 @@ class PPOModel(LearningModel):
             self.entropy = tf.ones_like(tf.reshape(self.value, [-1])) * self.entropy
         else:
             self.create_dc_actor_critic(h_size, num_layers)
-<<<<<<< HEAD
-=======
         if self.use_curiosity:
             self.curiosity_enc_size = curiosity_enc_size
             self.curiosity_strength = curiosity_strength
             encoded_state, encoded_next_state = self.create_curiosity_encoders()
             self.create_inverse_model(encoded_state, encoded_next_state)
             self.create_forward_model(encoded_state, encoded_next_state)
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         self.create_ppo_optimizer(self.probs, self.old_probs, self.value,
                                   self.entropy, beta, epsilon, lr, max_step)
 
@@ -62,8 +52,6 @@ class PPOModel(LearningModel):
         update_reward = tf.assign(last_reward, new_reward)
         return last_reward, new_reward, update_reward
 
-<<<<<<< HEAD
-=======
     def create_curiosity_encoders(self):
         """
         Creates state encoders for current and future observations.
@@ -173,7 +161,6 @@ class PPOModel(LearningModel):
         self.intrinsic_reward = tf.clip_by_value(self.curiosity_strength * squared_difference, 0, 1)
         self.forward_loss = tf.reduce_mean(tf.dynamic_partition(squared_difference, self.mask, 2)[1])
 
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
     def create_ppo_optimizer(self, probs, old_probs, value, entropy, beta, epsilon, lr, max_step):
         """
         Creates training-specific Tensorflow ops for PPO models.
@@ -186,52 +173,26 @@ class PPOModel(LearningModel):
         :param lr: Learning rate
         :param max_step: Total number of training steps.
         """
-<<<<<<< HEAD
-
-=======
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         self.returns_holder = tf.placeholder(shape=[None], dtype=tf.float32, name='discounted_rewards')
         self.advantage = tf.placeholder(shape=[None, 1], dtype=tf.float32, name='advantages')
         self.learning_rate = tf.train.polynomial_decay(lr, self.global_step, max_step, 1e-10, power=1.0)
 
         self.old_value = tf.placeholder(shape=[None], dtype=tf.float32, name='old_value_estimates')
-<<<<<<< HEAD
-        self.mask_input = tf.placeholder(shape=[None], dtype=tf.float32, name='masks')
-=======
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
         decay_epsilon = tf.train.polynomial_decay(epsilon, self.global_step, max_step, 0.1, power=1.0)
         decay_beta = tf.train.polynomial_decay(beta, self.global_step, max_step, 1e-5, power=1.0)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
 
-<<<<<<< HEAD
-        self.mask = tf.equal(self.mask_input, 1.0)
-
-=======
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         clipped_value_estimate = self.old_value + tf.clip_by_value(tf.reduce_sum(value, axis=1) - self.old_value,
                                                                    - decay_epsilon, decay_epsilon)
 
         v_opt_a = tf.squared_difference(self.returns_holder, tf.reduce_sum(value, axis=1))
         v_opt_b = tf.squared_difference(self.returns_holder, clipped_value_estimate)
-<<<<<<< HEAD
-        self.value_loss = tf.reduce_mean(tf.boolean_mask(tf.maximum(v_opt_a, v_opt_b), self.mask))
-=======
         self.value_loss = tf.reduce_mean(tf.dynamic_partition(tf.maximum(v_opt_a, v_opt_b), self.mask, 2)[1])
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
 
         # Here we calculate PPO policy loss. In continuous control this is done independently for each action gaussian
         # and then averaged together. This provides significantly better performance than treating the probability
         # as an average of probabilities, or as a joint probability.
-<<<<<<< HEAD
-        self.r_theta = probs / (old_probs + 1e-10)
-        self.p_opt_a = self.r_theta * self.advantage
-        self.p_opt_b = tf.clip_by_value(self.r_theta, 1.0 - decay_epsilon, 1.0 + decay_epsilon) * self.advantage
-        self.policy_loss = -tf.reduce_mean(tf.boolean_mask(tf.minimum(self.p_opt_a, self.p_opt_b), self.mask))
-
-        self.loss = self.policy_loss + 0.5 * self.value_loss - decay_beta * tf.reduce_mean(
-            tf.boolean_mask(entropy, self.mask))
-=======
         r_theta = probs / (old_probs + 1e-10)
         p_opt_a = r_theta * self.advantage
         p_opt_b = tf.clip_by_value(r_theta, 1.0 - decay_epsilon, 1.0 + decay_epsilon) * self.advantage
@@ -242,5 +203,4 @@ class PPOModel(LearningModel):
 
         if self.use_curiosity:
             self.loss += 10 * (0.2 * self.forward_loss + 0.8 * self.inverse_loss)
->>>>>>> 1ead1ccc2c842bd00a372eee5c4a47e429432712
         self.update_batch = optimizer.minimize(self.loss)
