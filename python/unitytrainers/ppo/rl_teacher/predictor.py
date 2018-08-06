@@ -4,6 +4,8 @@ import random
 
 from collections import deque
 
+from unityagents.brain import BrainParameters
+
 from unitytrainers.ppo.rl_teacher.segment_sampling import sample_segment_from_path
 
 from rl_teacher.nn import FullyConnectedMLP
@@ -13,7 +15,7 @@ from keras import backend as K
 class ComparisonRewardPredictor():
     """Predictor that trains a model to predict how much reward is contained in a trajectory segment"""
 
-    def __init__(self, env, summary_writer, comparison_collector, agent_logger, label_schedule,clip_length):
+    def __init__(self, brain:BrainParameters , summary_writer, comparison_collector, agent_logger, label_schedule,clip_length):
         self.summary_writer = summary_writer
         self.agent_logger = agent_logger
         self.comparison_collector = comparison_collector
@@ -21,7 +23,10 @@ class ComparisonRewardPredictor():
 
         # Set up some bookkeeping
         self.recent_segments = deque(maxlen=200)  # Keep a queue of recently seen segments to pull new comparisons from
-        self._frames_per_segment = clip_length * env.fps
+        
+        #self._frames_per_segment = clip_length * env.fps
+        self._frames_per_segment = clip_length * 30
+        
         self._steps_since_last_training = 0
         self._n_timesteps_per_predictor_training = 1e2  # How often should we train our predictor?
         self._elapsed_predictor_training_iters = 0
@@ -31,9 +36,9 @@ class ComparisonRewardPredictor():
             device_count={'GPU': 0}
         )
         self.sess = tf.InteractiveSession(config=config)
-        self.obs_shape = env.observation_space.shape
-        self.discrete_action_space = not hasattr(env.action_space, "shape")
-        self.act_shape = (env.action_space.n,) if self.discrete_action_space else env.action_space.shape
+        self.obs_shape =tuple([1,brain.vector_observation_space_size])
+        #self.discrete_action_space = not hasattr(env.action_space, "shape")
+        self.act_shape = tuple([brain.vector_action_space_size])
         self.graph = self._build_model()
         self.sess.run(tf.global_variables_initializer())
 
@@ -51,6 +56,9 @@ class ComparisonRewardPredictor():
         obs = tf.reshape(obs_segments, (-1,) + self.obs_shape)
         acts = tf.reshape(act_segments, (-1,) + self.act_shape)
 
+        print('obs: '+str(obs))
+        print('act: '+str(acts))
+
         # Run them through our neural network
         rewards = network.run(obs, acts)
 
@@ -67,16 +75,16 @@ class ComparisonRewardPredictor():
         """
         # Set up observation placeholders
         self.segment_obs_placeholder = tf.placeholder(
-            dtype=tf.float32, shape=(None, None) + self.obs_shape, name="obs_placeholder")
+            dtype=tf.float32,shape=self.obs_shape, name="obs_placeholder")
         self.segment_alt_obs_placeholder = tf.placeholder(
-            dtype=tf.float32, shape=(None, None) + self.obs_shape, name="alt_obs_placeholder")
+            dtype=tf.float32, shape=self.obs_shape, name="alt_obs_placeholder")
 
         self.segment_act_placeholder = tf.placeholder(
-            dtype=tf.float32, shape=(None, None) + self.act_shape, name="act_placeholder")
+            dtype=tf.float32, shape=self.act_shape, name="act_placeholder")
         self.segment_alt_act_placeholder = tf.placeholder(
-            dtype=tf.float32, shape=(None, None) + self.act_shape, name="alt_act_placeholder")
+            dtype=tf.float32, shape=self.act_shape, name="alt_act_placeholder")
 
-
+        
         # A vanilla multi-layer perceptron maps a (state, action) pair to a reward (Q-value)
         mlp = FullyConnectedMLP(self.obs_shape, self.act_shape)
 

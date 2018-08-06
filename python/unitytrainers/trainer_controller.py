@@ -182,8 +182,12 @@ class TrainerController(object):
                                                                      trainer_parameters_dict[brain_name],
                                                                      self.train_model, self.seed)
             elif trainer_parameters_dict[brain_name]['trainer'] == "ppo":
+                num_timesteps=trainer_parameters_dict[brain_name]['max_steps']
+                num_labels=800
+                pretrain_labels=10
+
                 self.trainers[brain_name] = PPOTrainer(sess, self.env, brain_name, trainer_parameters_dict[brain_name],
-                                                       self.train_model, self.seed)
+                                                       self.train_model, self.seed,num_timesteps,num_labels,pretrain_labels)
             else:
                 raise UnityEnvironmentException("The trainer config contains an unknown trainer type for brain {}"
                                                 .format(brain_name))

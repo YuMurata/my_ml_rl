@@ -33,6 +33,8 @@ class PPOTrainer(Trainer):
         :param env: The UnityEnvironment.
         :param  trainer_parameters: The parameters for the trainer (dictionary).
         :param training: Whether the trainer is set for training.
+        :param num_timesteps: timesteps collect segment.
+        :param num_labels: .
         """
         self.param_keys = ['batch_size', 'beta', 'buffer_size', 'epsilon', 'gamma', 'hidden_units', 'lambd',
                            'learning_rate', 'max_steps', 'normalize', 'num_epoch', 'num_layers',
@@ -122,9 +124,9 @@ class PPOTrainer(Trainer):
         comparison_collector = HumanComparisonCollector(experiment_name=brain_name)
         
         self.predictor = ComparisonRewardPredictor(
-            env,
+            self.brain,
             self.summary_writer,
-            comparison_collector=self.comparison_collector,
+            comparison_collector=comparison_collector,
             agent_logger=logger,
             label_schedule=label_schedule,
             clip_length= CLIP_LENGTH)
