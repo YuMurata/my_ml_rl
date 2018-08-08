@@ -56,9 +56,6 @@ class ComparisonRewardPredictor():
         obs = tf.reshape(obs_segments, (-1,) + self.obs_shape)
         acts = tf.reshape(act_segments, (-1,) + self.act_shape)
 
-        print('obs: '+str(obs))
-        print('act: '+str(acts))
-
         # Run them through our neural network
         rewards = network.run(obs, acts)
 

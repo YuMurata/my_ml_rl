@@ -11,7 +11,7 @@ import tensorflow as tf
 from unityagents.brain import AllBrainInfo, BrainInfo
 from unitytrainers.buffer import Buffer
 from unitytrainers.ppo.models import PPOModel
-from unitytrainers.ppo.rl_teacher.segment_sampling import do_rollout
+from unitytrainers.ppo.rl_teacher.segment_sampling import do_rollout, basic_segments_from_rand_rollout
 from unitytrainers.ppo.rl_teacher.predictor import ComparisonRewardPredictor
 from unitytrainers.trainer import UnityTrainerException, Trainer
 from unityagents.environment import UnityEnvironment
@@ -450,24 +450,28 @@ class PPOTrainer(Trainer):
                 self.intrinsic_rewards[agent_id] = 0
 
     def pre_collect_comparison(self,env,n_desired_segments, clip_length_in_seconds,verbose=True):
-        segments = []
-        segment_length = int(clip_length_in_seconds * env.fps)
-        while len(segments) < n_desired_segments:
-            path = do_rollout(env)
-        # Calculate the number of segments to sample from the path
-        # Such that the probability of sampling the same part twice is fairly low.
-        segments_for_this_path = max(1, int(0.25 * len(path["obs"]) / segment_length))
-        for _ in range(segments_for_this_path):
-            segment = sample_segment_from_path(path, segment_length)
-            if segment:
-                segments.append(segment)
+        print("Starting random rollouts to generate pretraining segments. No learning will take place...")
+        pretrain_segments = basic_segments_from_rand_rollout(
+            env_id, make_with_torque_removed, n_desired_segments=pretrain_labels * 2,
+            clip_length_in_seconds=CLIP_LENGTH, workers=args.workers)
+        for i in range(pretrain_labels):  # Turn our random segments into comparisons
+            comparison_collector.add_segment_pair(pretrain_segments[i], pretrain_segments[i + pretrain_labels])
 
-            if verbose and len(segments) % 10 == 0 and len(segments) > 0:
-                print("Collected %s/%s segments" % (len(segments) * _multiplier, n_desired_segments * _multiplier))
+        # Sleep until the human has labeled most of the pretraining comparisons
+        while len(comparison_collector.labeled_comparisons) < int(pretrain_labels * 0.75):
+            comparison_collector.label_unlabeled_comparisons()
+            if args.predictor == "synth":
+                print("%s synthetic labels generated... " % (len(comparison_collector.labeled_comparisons)))
+            elif args.predictor == "human":
+                print("%s/%s comparisons labeled. Please add labels w/ the human-feedback-api. Sleeping... " % (
+                    len(comparison_collector.labeled_comparisons), pretrain_labels))
+                sleep(5)
 
-        if verbose:
-            print("Successfully collected %s segments" % (len(segments) * _multiplier))
-        return segments
+        # Start the actual training
+        for i in range(args.pretrain_iters):
+            predictor.train_predictor()  # Train on pretraining labels
+            if i % 100 == 0:
+                print("%s/%s predictor pretraining iters... " % (i, args.pretrain_iters))
 
     def is_ready_update(self):
         """

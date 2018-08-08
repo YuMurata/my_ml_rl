@@ -35,16 +35,17 @@ def random_action(env, ob):
     """ Pick an action by uniformly sampling the environment's action space. """
     return env.action_space.sample()
 
-def do_rollout(env:UnityEnvironment):
+def do_rollout(env:UnityEnvironment,brain_name):
     """ Builds a path by running through an environment using a provided function to select actions. """
     obs, rewards, actions, human_obs = [], [], [], []
-    max_timesteps_per_episode = get_timesteps_per_episode(env)
-    ob = env.reset()
+
+    curr_info = env.reset(train_mode=False)
     # Primary environment loop
-    for i in range(max_timesteps_per_episode):
-        action = 2*np.random.rand(self.model.a_size)-1
+    while not env.global_done:
+        action = 2*np.random.rand()-1
         obs.append(ob)
         actions.append(action)
+        new_info = env.step(vector_action=action)[brain_name]
         ob, rew, done, info = env.step(action)
         rewards.append(rew)
         human_obs.append(info.get("human_obs"))
@@ -67,10 +68,12 @@ def basic_segments_from_rand_rollout(
     segments = []
     env = make_env(env_id)
     env.seed(seed)
-    space_prng.seed(seed)
-    segment_length = int(clip_length_in_seconds * env.fps)
+
+    # fps=env.fps
+    fps=30
+    segment_length = int(clip_length_in_seconds * fps)
     while len(segments) < n_desired_segments:
-        path = do_rollout(env, random_action)
+        path = do_rollout(env,brain_name)
         # Calculate the number of segments to sample from the path
         # Such that the probability of sampling the same part twice is fairly low.
         segments_for_this_path = max(1, int(0.25 * len(path["obs"]) / segment_length))
