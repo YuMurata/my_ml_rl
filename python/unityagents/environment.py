@@ -17,6 +17,7 @@ from communicator_objects import UnityRLInput, UnityRLOutput, AgentActionProto,\
 from .rpc_communicator import RpcCommunicator
 from .socket_communicator import SocketCommunicator
 
+from enum import IntEnum
 
 from sys import platform
 from PIL import Image
@@ -24,6 +25,11 @@ from PIL import Image
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("unityagents")
 
+class UnityCommand(IntEnum):
+    STEP=0
+    RESET=1
+    QUIT=2
+    RECORD=3
 
 class UnityEnvironment(object):
     def __init__(self, file_name=None, worker_id=0,
@@ -487,7 +493,7 @@ class UnityEnvironment(object):
                     text_actions=text_action[b][i]
                 )
                 rl_in.agent_actions[b].value.extend([action])
-                rl_in.command = 0
+                rl_in.command = UnityCommand.STEP
         return self.wrap_unity_input(rl_in)
 
     def _generate_reset_input(self, training, config) -> UnityRLInput:
@@ -496,7 +502,12 @@ class UnityEnvironment(object):
         rl_in.environment_parameters.CopyFrom(EnvironmentParametersProto())
         for key in config:
             rl_in.environment_parameters.float_parameters[key] = config[key]
-        rl_in.command = 1
+        rl_in.command = UnityCommand.RESET
+        return self.wrap_unity_input(rl_in)
+
+    def _generate_record_input(self) -> UnityRLInput:
+        rl_in = UnityRLInput()
+        rl_in.command = UnityCommand.RECORD
         return self.wrap_unity_input(rl_in)
 
     def send_academy_parameters(self, init_parameters: UnityRLInitializationInput) -> UnityRLInitializationOutput:

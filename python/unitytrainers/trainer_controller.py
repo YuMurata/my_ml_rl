@@ -244,8 +244,9 @@ class TrainerController(object):
             if self.train_model:
                 for brain_name, trainer in self.trainers.items():
                     trainer.write_tensorboard_text('Hyperparameters', trainer.parameters)
-                    trainer.
-            
+
+            # print('record')
+            # self.env._generate_record_input()       
 
             try:
                 while any([t.get_step <= t.get_max_steps for k, t in self.trainers.items()]) or not self.train_model:
